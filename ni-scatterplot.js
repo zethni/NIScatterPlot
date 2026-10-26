@@ -1,4 +1,4 @@
-// import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 // import { regressionLinear } from "https://unpkg.com/d3-regression@2/dist/d3-regression.min.js";
 
 class NIScatterPlot extends HTMLElement {
@@ -199,7 +199,7 @@ class NIScatterPlot extends HTMLElement {
       highlightfield: null,
       highlightvalue: null,
       highlighttoggle: false,
-      ratio: 2.5 // height to width ratio
+      ratio: 1 // height to width ratio
     };
   }
   _getAttributes() {
@@ -388,8 +388,15 @@ class NIScatterPlot extends HTMLElement {
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    // const x = d3.scaleLinear().range([0, innerWidth]);
+    // const y = d3.scaleLinear().range([innerHeight, 0]);
+    // dynamically set x and y scales based on data
     const x = d3.scaleLinear().range([0, innerWidth]);
     const y = d3.scaleLinear().range([innerHeight, 0]);
+    if ($this.data && $this.data.length > 0) {
+      x.domain(d3.extent($this.data, (d) => d[$this.options.xkey]));
+      y.domain(d3.extent($this.data, (d) => d[$this.options.ykey]));
+    }
 
     this.svg
       .append("g")
